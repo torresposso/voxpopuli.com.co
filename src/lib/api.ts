@@ -1,7 +1,5 @@
 async function fetchAPI(query: string, { variables }: any = {}) {
-  console.log('hit fetch', import.meta.env.WP_URL);
   const headers = { 'Content-Type': 'application/json' };
-
   const res = await fetch(import.meta.env.WP_URL, {
     method: 'POST',
     headers,
