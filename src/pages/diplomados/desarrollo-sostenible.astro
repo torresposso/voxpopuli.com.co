@@ -1,0 +1,88 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../config';
+---
+
+<!DOCTYPE html>
+<html lang="es_CO">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body class="">
+    <Header title={SITE_TITLE} />
+    <div class="w-full relative">
+      <img class="object-cover w-full h-[350px]" src="/diplomado1.jpg" alt="" />
+
+      <div
+        class="absolute top-0 w-full h-full grid place-items-center backdrop-blur-sm backdrop-brightness-50"
+      >
+        <h1
+          class="max-w-xl text-center text-white font-semibold text-4xl drop-shadow-xl"
+        >
+          DESARROLLO SOSTENIBLE PARA EL EMPRENDIMIENTO Y LA INNOVACION
+        </h1>
+      </div>
+    </div>
+    <main class="max-w-5xl mx-auto py-14">
+      <div class="prose lg:prose-xl mx-auto">
+        <h2>Objetivo general</h2>
+        <p>
+          Crear una “Red de Gestores para el Desarrollo Sostenible y la
+          Innovación” que sirva de apoyo a las comunidades para la superación de
+          la pobreza y la seguridad alimentaria mediante una gestión integral
+          del medio ambiente y de la economía sostenible para la implementación
+          de los Objetivos de Desarrollo Sostenible (ODS) y la Innovación.
+        </p>
+        <h2>Objetivos Específicos:</h2>
+        <ul>
+          <li>
+            Proponer un enfoque integral de la formación del ser y su medio
+            ambiente.
+          </li>
+          <li>
+            Coadyuvar en la implementación de los Objetivos de Desarrollo
+            Sostenible. (ODS), del cual Colombia suscribió los compromisos hasta
+            el año 2030.
+          </li>
+          <li>
+            Presentar una opción de emprendimiento con la implementación de
+            buenas prácticas ambientales para la búsqueda de la seguridad
+            alimentaria.
+          </li>
+          <li>Conocer los aspectos del ordenamiento territorial.</li>
+          <li>
+            Manejar herramientas de gestión del riesgo y adaptación al cambio
+            climático.
+          </li>
+          <li>
+            Apropiar la metodología de marco lógico aplicado a la formulación de
+            proyectos de emprendimiento de desarrollo sostenible.
+          </li>
+        </ul>
+
+        <h2>JUSTIFICACIÓN:</h2>
+        <p>
+          El desarrollo sostenible se plantea como la alternativa factible para
+          enfrentar la problemática ambiental y mantener el crecimiento
+          económico para la superación de la pobreza y garantizar la seguridad
+          alimentaria. Ser sostenible significa actuar en el presente pensando
+          en el futuro. Esto es, atender las necesidades actuales, sin afectar
+          la capacidad de las futuras generaciones. Es generar impactos
+          positivos desde nuestras acciones en el ámbito social, económico y
+          ambiental, con el fin de garantizar los recursos necesarios para las
+          futuras generaciones. Colombia es uno de los Estados Parte que
+          suscribieron sus compromisos para implementar los Objetivos de
+          Desarrollo Sostenible (ODS) propuestos por el PNUD. De igual manera en
+          el 2017 se aprobó el documento CONPES denominado “ESTRATEGIA PARA LA
+          IMPLEMENTACIÓN DE LOS OBJETIVOS DE DESARROLLO SOSTENIBLE (ODS) EN
+          COLOMBIA”. Son 17 objetivos entre los cuales está la superación de la
+          pobreza, mejorar la calidad educativa, garantizar la seguridad
+          alimentaria, ciudades y comunidades sostenibles.
+        </p>
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

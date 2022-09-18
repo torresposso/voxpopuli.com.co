@@ -1,0 +1,72 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../config';
+---
+
+<!DOCTYPE html>
+<html lang="es_CO">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body class="">
+    <Header title={SITE_TITLE} />
+    <div class="w-full relative">
+      <img class="object-cover w-full h-[350px]" src="/diplomado3.jpg" alt="" />
+
+      <div
+        class="absolute top-0 w-full h-full grid place-items-center backdrop-blur-sm backdrop-brightness-50"
+      >
+        <h1
+          class="max-w-xl text-center text-white font-semibold text-4xl drop-shadow-xl"
+        >
+          LIDERAZGO PARA LA TRANSFORMACIÓN CREATIVA Y EL BUEN VIVIR
+        </h1>
+      </div>
+    </div>
+    <main class="max-w-5xl mx-auto py-14">
+      <div class="prose lg:prose-xl mx-auto">
+        <h2>Objetivo general</h2>
+
+        <p>
+          Formar un liderazgo integral competente basado en la grandeza
+          primordial (integridad del SER) para la transformación creativa del
+          entorno social, cultural y político. El cambio en la sociedad solo es
+          posible si se genera desde la propia revolución personal del SER que
+          pretende liderarlo. Esto es, mediante competencias cognitivas, éticas,
+          económicas, políticas y físicas, cuyo objetivo sea «El buen vivir».
+        </p>
+
+        <h2>Objetivos Específicos:</h2>
+        <ul>
+          <li>
+            Formar a 3 mil dirigentes comunales sociales, étnico – culturales y
+            víctimas del conflicto en liderazgo integral competente basado en la
+            grandeza primordial (integridad del SER).
+          </li>
+          <li>
+            Fortalecer la participación popular en los procesos públicos del
+            departamento.
+          </li>
+          <li>Crear una Red de Líderes Comunales.</li>
+          <li>Promover la participación ciudadana.</li>
+        </ul>
+
+        <h2>JUSTIFICACIÓN:</h2>
+        <p>
+          La sociedad está cambiando, necesita líderes con valores que inspiren
+          a otros. Pero para transformar el territorio, los líderes deben
+          transformarse así mismo. Por esta razón buscamos empoderar a 3 mil
+          dirigentes sociales (hombres y mujeres) que, a su vez, impactarán a 30
+          mil dirigentes populares y sociales. Estos hombres y mujeres ocuparán
+          un lugar en la nueva historia de nuestro país y serán héroes que
+          dirigirán su proceso de emancipación personal para tener un desempeño
+          consciente en el liderazgo social, cultural, político y económico del
+          departamento.
+        </p>
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>
