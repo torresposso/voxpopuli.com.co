@@ -37,7 +37,7 @@ COPY . /app
 COPY --from=php_builder /app/vendor /app/vendor
 
 # Copy built theme assets
-COPY --from=node_builder /app/web/app/themes/sage/public/dist /app/web/app/themes/sage/public/dist
+COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
 
 # Ensure SQLite directory exists and has permissions
 RUN mkdir -p web/app/database && chmod 777 web/app/database

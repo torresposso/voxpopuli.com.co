@@ -19,7 +19,7 @@ web/app/database/.htaccess
 
 # Sage
 web/app/themes/*/node_modules
-web/app/themes/*/public/dist
+web/app/themes/*/public/build
 web/app/themes/*/.vite
 web/app/themes/*/.phpunit.result.cache
 web/app/themes/*/vendor
