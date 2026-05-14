@@ -1,0 +1,40 @@
+# Bedrock
+.env
+.env.local
+web/app/uploads/*
+!web/app/uploads/.gitkeep
+web/app/upgrade
+web/app/cache/*
+!web/app/cache/.gitkeep
+web/app/plugins/*
+!web/app/plugins/.gitkeep
+web/app/mu-plugins/*
+!web/app/mu-plugins/.gitkeep
+web/wp
+vendor
+
+# SQLite
+web/app/database/*.sqlite
+web/app/database/.htaccess
+
+# Sage
+web/app/themes/*/node_modules
+web/app/themes/*/public/dist
+web/app/themes/*/.vite
+web/app/themes/*/.phpunit.result.cache
+web/app/themes/*/vendor
+web/app/themes/*/public/hot
+
+# Docker
+.docker_data/
+db_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

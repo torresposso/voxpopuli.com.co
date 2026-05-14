@@ -1,0 +1,54 @@
+{
+  "name": "voxpopuli/voxpopuli",
+  "type": "project",
+  "description": "WordPress Bedrock setup for voxpopuli.com.co",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wp-packages.org",
+      "only": [
+        "wp-plugin/*",
+        "wp-theme/*"
+      ]
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "composer/installers": "^2.2",
+    "vlucas/phpdotenv": "^5.5",
+    "oscarotero/env": "^2.1",
+    "roots/wordpress": "^6.4",
+    "roots/wp-config": "^1.0.0",
+    "roots/wp-password-bcrypt": "^1.1.0",
+    "roots/acorn": "^6.0",
+    "wp-cli/wp-cli-bundle": "^2.10",
+    "wp-plugin/sqlite-database-integration": "^2.2"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "composer/installers": true,
+      "roots/wordpress-core-installer": true
+    }
+  },
+  "extra": {
+    "installer-paths": {
+      "web/app/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin"
+      ],
+      "web/app/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "web/app/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    },
+    "wordpress-install-dir": "web/wp"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "Roots\\Acorn\\ComposerScripts::postAutoloadDump"
+    ]
+  }
+}

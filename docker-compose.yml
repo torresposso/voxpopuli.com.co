@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    environment:
+      - WP_ENV=development
+      - WP_HOME=http://localhost:8080
+      - WP_SITEURL=http://localhost:8080/wp
+      - DB_ENGINE=sqlite
+    ports:
+      - "8080:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - .:/app
+
+  node:
+    image: node:20-alpine
+    working_dir: /app/web/app/themes/sage
+    volumes:
+      - .:/app
+    environment:
+      - VITE_HMR_HOST=localhost
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"

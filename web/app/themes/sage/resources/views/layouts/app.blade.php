@@ -1,0 +1,1 @@
+<!doctype html>\n<html {{ get_language_attributes() }}>\n  <head>\n    <meta charset='utf-8'>\n    <meta name='viewport' content='width=device-width, initial-scale=1'>\n    <?php wp_head(); ?>\n  </head>\n  <body <?php body_class(); ?>>\n    <?php wp_body_open(); ?>\n    <div id='app'>\n      @yield('content')\n    </div>\n    <?php wp_footer(); ?>\n  </body>\n</html>

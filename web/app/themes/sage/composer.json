@@ -1,0 +1,57 @@
+{
+  "name": "roots/sage",
+  "type": "wordpress-theme",
+  "license": "MIT",
+  "description": "WordPress starter theme with a modern development workflow",
+  "homepage": "https://roots.io/sage/",
+  "authors": [
+    {
+      "name": "Ben Word",
+      "email": "ben@benword.com",
+      "homepage": "https://github.com/retlehs"
+    },
+    {
+      "name": "Scott Hull",
+      "email": "scott@pointfree.io",
+      "homepage": "https://github.com/horprogs"
+    }
+  ],
+  "keywords": [
+    "wordpress"
+  ],
+  "support": {
+    "issues": "https://github.com/roots/sage/issues",
+    "forum": "https://discourse.roots.io/"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "roots/acorn": "^6.0"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.9",
+    "roave/security-advisories": "dev-latest"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "lint": [
+      "phpcs --extensions=php --standard=PSR12 app"
+    ],
+    "post-autoload-dump": [
+      "Roots\\Acorn\\ComposerScripts::postAutoloadDump"
+    ]
+  }
+}
