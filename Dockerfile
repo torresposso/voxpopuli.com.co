@@ -43,5 +43,5 @@ COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/them
 RUN mkdir -p web/app/database && chmod 777 web/app/database
 
 # FrankenPHP configuration
-ENV FRANKENPHP_CONFIG="worker ./public/index.php"
+ENV FRANKENPHP_CONFIG="worker ./web/index.php"
 ENV RAILPACK_PHP_ROOT_DIR=/app/web
