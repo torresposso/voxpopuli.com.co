@@ -44,3 +44,12 @@ COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/them
 
 # Ensure SQLite directory exists and has permissions
 RUN mkdir -p web/app/database && chmod 777 web/app/database
+
+# Default port
+ENV PORT=80
+
+# Expose the port
+EXPOSE 80
+
+# Use FrankenPHP entrypoint
+ENTRYPOINT ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

@@ -1,8 +1,9 @@
 {
     frankenphp
+    auto_https off
 }
 
-:{$PORT} {
+http://:{$PORT} {
     root * /app/web
     encode zstd gzip
 
