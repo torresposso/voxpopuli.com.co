@@ -56,8 +56,8 @@ fi
 # 6. Acorn Optimize (Solo si WP está configurado y en producción)
 if [ "$WP_ENV" = "production" ] && [ -f "web/wp-config.php" ]; then
     echo "Running Acorn optimization..."
-    # Ejecutamos desde el root de la app para que WP-CLI encuentre el bootstrap
-    wp acorn optimize --path=/app/web --allow-root || echo "Warning: Acorn optimize failed, continuing anyway..."
+    # Intentamos optimizar, pero silenciamos el output de error si Acorn no está listo aún
+    wp acorn optimize --path=/app/web --allow-root >/dev/null 2>&1 || true
 fi
 
 exec "$@"

@@ -1,38 +1,38 @@
 {
-    frankenphp
-    order php_server before file_server
-    auto_https off
-    admin off
-    storage file_system /tmp/caddy_storage
+	# Global options
+	frankenphp {
+		# Enable the worker mode for performance
+		num_threads 2
+	}
+	# Disable admin API for security and cleaner logs
+	admin off
+	# Disable HTTPS auto redirection since Railway handles SSL
+	auto_https off
+	# Storage configuration to avoid non-root permission issues
+	storage file_system {
+		root /tmp/caddy_storage
+	}
 }
 
 :{$PORT:8080} {
-    root * /app/web
-    encode zstd gzip
-    
-    # WordPress Permalinks
-    try_files {path} {path}/ /index.php?{query}
+	# Set the document root for Bedrock
+	root * web/
 
-    # PHP Server
-    php_server
+	# Enable the FrankenPHP handler
+	php_server
 
-    # Security Headers
-    header {
-        X-Content-Type-Options nosniff
-        X-Frame-Options DENY
-        Referrer-Policy strict-origin-when-cross-origin
-        Permissions-Policy "geolocation=(), microphone=(), camera=()"
-    }
+	# Handle static assets in Sage theme
+	handle_path /app/themes/sage/public/build/* {
+		root * web/app/themes/sage/public/build/
+		file_server
+	}
 
-    # Deny access to sensitive files
-    @forbidden {
-        path *.sqlite *.sqlite-journal *.sqlite-wal *.ht.sqlite .env* composer.*
-    }
-    error @forbidden 403
+	# Global compression
+	encode zstd gzip
 
-    log {
-        output stdout
-        format json
-    }
-
+	# Logging
+	log {
+		output stdout
+		format json
+	}
 }
