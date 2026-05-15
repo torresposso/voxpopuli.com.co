@@ -22,11 +22,20 @@ if [ -d "web/app/uploads" ] && [ -z "$(ls -A /data/uploads 2>/dev/null)" ]; then
     cp -a web/app/uploads/. /data/uploads/ 2>/dev/null || true
 fi
 
-# 4. Enlazar (Removemos locales y creamos symlinks)
-# Como somos usuario 82, /app es nuestro, podemos borrar y crear links
-rm -rf web/app/database web/app/uploads
-ln -s /data/database web/app/database
-ln -s /data/uploads web/app/uploads
+# 4. Enlazar (Solo si no son links ya)
+# Usamos [ -L ] para chequear si es un link simbólico y evitar borrar datos por error
+for dir in "web/app/database" "web/app/uploads"; do
+    if [ ! -L "$dir" ]; then
+        if [ -d "$dir" ] && [ "$(ls -A /data/$(basename $dir) 2>/dev/null)" ]; then
+            echo "Moving existing local $dir to /data (backup)..."
+            mv "$dir" "$dir.bak" || true
+        else
+            rm -rf "$dir"
+        fi
+        echo "Creating symlink for $dir..."
+        ln -s "/data/$(basename $dir)" "$dir"
+    fi
+done
 
 # 5. Optimización: Habilitar WAL mode si la DB existe
 if [ -f "/data/database/.ht.sqlite" ]; then
