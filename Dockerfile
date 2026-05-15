@@ -42,10 +42,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . .
 
 # Copy build assets from the assets stage
-RUN if [ -d "web/app/themes/sage/public/build" ]; then \
-        rm -rf web/app/themes/sage/public/build; \
-    fi
-COPY --from=assets /app/web/app/themes/sage/public/build ./web/app/themes/sage/public/build 2>/dev/null || true
+COPY --from=assets /app/web/app/themes/sage/public/build ./web/app/themes/sage/public/build/
 
 # Setup permissions
 RUN chmod +x /app/docker-entrypoint.sh
