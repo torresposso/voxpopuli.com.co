@@ -12,11 +12,14 @@ RUN composer install --working-dir=web/app/themes/sage --no-dev --no-scripts --o
 
 # Stage 2: Theme assets (Vite)
 FROM node:20-alpine AS node_builder
-WORKDIR /app
-COPY web/app/themes/sage/package.json web/app/themes/sage/package-lock.json* ./web/app/themes/sage/
-COPY web/app/themes/sage ./web/app/themes/sage
 WORKDIR /app/web/app/themes/sage
-RUN npm install && npm run build
+# Copy only package files first to leverage Docker layer caching
+COPY web/app/themes/sage/package.json web/app/themes/sage/package-lock.json* ./
+RUN npm ci || npm install
+
+# Copy the rest of the theme to build assets
+COPY web/app/themes/sage ./
+RUN npm run build
 
 # Stage 3: Runtime
 FROM dunglas/frankenphp:latest-php8.3-alpine AS runtime
@@ -29,6 +32,7 @@ RUN install-php-extensions \
     mysqli \
     opcache \
     pdo_mysql \
+    redis \
     zip
 
 WORKDIR /app
@@ -36,7 +40,10 @@ WORKDIR /app
 # Copy Caddyfile
 COPY Caddyfile /etc/caddy/Caddyfile
 
-# Copy application code
+# Copy optimized PHP config
+COPY php.ini /usr/local/etc/php/conf.d/app-optimized.ini
+
+# Copy application code (protected by .dockerignore)
 COPY . /app
 
 # Copy EVERYTHING from php_builder
@@ -50,7 +57,7 @@ COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/them
 
 # Final production settings
 RUN mkdir -p web/app/database web/app/uploads web/app/mu-plugins && \
-    chmod 777 web/app/database web/app/uploads web/app/mu-plugins && \
+    chown -R 82:82 web/app/database web/app/uploads web/app/mu-plugins && \
     chmod +x docker-entrypoint.sh
 
 ENV PORT=80

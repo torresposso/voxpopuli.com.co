@@ -1,0 +1,19 @@
+.git
+.env
+.github
+.atl
+docker-compose.yml
+railway.json
+README.md
+
+# Ignore local vendor and node_modules (these must be built inside Docker)
+vendor/
+web/wp/
+web/app/plugins/
+web/app/themes/sage/vendor/
+web/app/themes/sage/node_modules/
+web/app/themes/sage/public/build/
+
+# Ignore local databases and uploads (these live in the volume)
+web/app/database/
+web/app/uploads/
