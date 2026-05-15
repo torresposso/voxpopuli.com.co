@@ -107,12 +107,12 @@ Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?: true);
 /**
  * Redis Object Cache
  */
-if (env('WP_REDIS_HOST')) {
-    Config::define('WP_REDIS_HOST', env('WP_REDIS_HOST'));
-    Config::define('WP_REDIS_PORT', env('WP_REDIS_PORT'));
-    Config::define('WP_REDIS_PASSWORD', env('WP_REDIS_PASSWORD'));
-    Config::define('WP_REDIS_DATABASE', env('WP_REDIS_DATABASE') ?: 0);
-}
+Config::define('WP_REDIS_HOST', env('WP_REDIS_HOST') ?: '127.0.0.1');
+Config::define('WP_REDIS_PORT', env('WP_REDIS_PORT') ?: 6379);
+Config::define('WP_REDIS_PASSWORD', env('WP_REDIS_PASSWORD'));
+Config::define('WP_REDIS_DATABASE', env('WP_REDIS_DATABASE') ?: 0);
+Config::define('WP_REDIS_TIMEOUT', 5);
+Config::define('WP_REDIS_READ_TIMEOUT', 5);
 
 /**
  * Debugging Settings
