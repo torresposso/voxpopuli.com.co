@@ -33,8 +33,11 @@
     "roots/acorn": "^6.0"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.9",
-    "roave/security-advisories": "dev-latest"
+    "brain/monkey": "^2.7",
+    "mockery/mockery": "^1.6",
+    "phpunit/phpunit": "^10.0",
+    "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "^3.9"
   },
   "config": {
     "optimize-autoloader": true,
@@ -42,6 +45,9 @@
     "sort-packages": true,
     "allow-plugins": {
       "composer/installers": true
+    },
+    "platform": {
+      "php": "8.3.6"
     }
   },
   "minimum-stability": "dev",
