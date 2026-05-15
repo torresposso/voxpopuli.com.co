@@ -1,17 +1,13 @@
 {
 	frankenphp {
 		num_threads 2
-		max_threads 2
-		max_requests 500
+		php_ini memory_limit 128M
 	}
 	admin off
 	auto_https off
-	storage file_system {
-		root /tmp/caddy_storage
-	}
 }
 
-:8080 {
+:{$PORT:80} {
 	root * web/
 	route {
 		handle_path /app/themes/sage/public/build/* {
