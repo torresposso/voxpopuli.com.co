@@ -3,8 +3,6 @@
 		num_threads 2
 		max_threads 2
 		max_requests 500
-		php_ini memory_limit 128M
-		php_ini opcache.memory_consumption 64
 	}
 	admin off
 	auto_https off
@@ -13,32 +11,20 @@
 	}
 }
 
-:{$PORT:8080} {
-	# Set the document root for Bedrock
+:8080 {
 	root * web/
-
-	# We wrap everything in a route block to ensure proper execution order
 	route {
-		# Handle static assets in Sage theme with aggressive caching
 		handle_path /app/themes/sage/public/build/* {
 			root * web/app/themes/sage/public/build/
 			header Cache-Control "public, max-age=31536000, immutable"
 			file_server
 		}
-
-		# Enable the FrankenPHP handler with Bedrock optimizations
 		php_server {
 			resolve_root_symlink false
 		}
-
-		# Browser cache headers for non-static content
 		header ?Cache-Control "no-cache, no-store, must-revalidate"
 	}
-
-	# Global compression
 	encode zstd gzip
-
-	# Logging
 	log {
 		output stdout
 		format json
