@@ -29,16 +29,16 @@ WORKDIR /app
 # Clean up redundant PHP extension configs that cause "already loaded" warnings
 RUN rm -f /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini 2>/dev/null || true
 
-# Use production PHP configuration and tune it for performance
+# Use production PHP configuration and tune it for performance (low-memory profile)
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
-    sed -i 's/memory_limit = 128M/memory_limit = 512M/' "$PHP_INI_DIR/php.ini" && \
+    sed -i 's/memory_limit = 128M/memory_limit = 256M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 100M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/post_max_size = 8M/post_max_size = 100M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/;opcache.enable=1/opcache.enable=1/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/;opcache.validate_timestamps=1/opcache.validate_timestamps=1/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=2/' "$PHP_INI_DIR/php.ini" && \
-    sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=256/' "$PHP_INI_DIR/php.ini" && \
-    sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=16/' "$PHP_INI_DIR/php.ini"
+    sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=64/' "$PHP_INI_DIR/php.ini" && \
+    sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=8/' "$PHP_INI_DIR/php.ini"
 
 # Global PHP/FrankenPHP settings
 ENV PORT=8080 \

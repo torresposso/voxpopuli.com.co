@@ -1,8 +1,8 @@
 {
 	# Global options
 	frankenphp {
-		# Enable the worker mode for performance
-		num_threads 4
+		# Low-memory thread profile
+		num_threads 2
 	}
 	# Disable admin API for security and cleaner logs
 	admin off
