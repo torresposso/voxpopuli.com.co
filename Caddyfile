@@ -18,13 +18,16 @@
 	# Set the document root for Bedrock
 	root * web/
 
-	# Enable the FrankenPHP handler
-	php_server
+	# We wrap everything in a route block to ensure proper execution order
+	route {
+		# Handle static assets in Sage theme
+		handle_path /app/themes/sage/public/build/* {
+			root * web/app/themes/sage/public/build/
+			file_server
+		}
 
-	# Handle static assets in Sage theme
-	handle_path /app/themes/sage/public/build/* {
-		root * web/app/themes/sage/public/build/
-		file_server
+		# Enable the FrankenPHP handler for all other requests
+		php_server
 	}
 
 	# Global compression
