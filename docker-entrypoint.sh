@@ -1,64 +1,54 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-# 1. Seguridad: Verificar que el volumen esté montado o sea accesible
-if [ ! -d "/data" ]; then
-    echo "CRITICAL: /data directory not found. Volume mount might have failed."
-    exit 1
-fi
-
-# 2. Asegurar directorios en el volumen (Ignoramos errores si ya existen o son de solo lectura)
-mkdir -p /data/database /data/uploads 2>/dev/null || true
-
-# 3. Inicialización (Solo copiar si el volumen está vacío)
-# Usamos un flag para evitar chequeos de permisos lentos
-if [ -d "web/app/database" ] && [ -z "$(ls -A /data/database 2>/dev/null)" ]; then
-    echo "Initializing database in /data/database..."
-    cp -a web/app/database/. /data/database/ 2>/dev/null || true
-fi
-
-if [ -d "web/app/uploads" ] && [ -z "$(ls -A /data/uploads 2>/dev/null)" ]; then
-    echo "Initializing uploads in /data/uploads..."
-    cp -a web/app/uploads/. /data/uploads/ 2>/dev/null || true
-fi
-
-# 4. Enlazar (Solo si no son links ya)
-# Usamos [ -L ] para chequear si es un link simbólico y evitar borrar datos por error
-for dir in "web/app/database" "web/app/uploads"; do
-    if [ ! -L "$dir" ]; then
-        if [ -d "$dir" ] && [ "$(ls -A /data/$(basename $dir) 2>/dev/null)" ]; then
-            echo "Moving existing local $dir to /data (backup)..."
-            mv "$dir" "$dir.bak" || true
-        else
-            rm -rf "$dir"
+# Link the persistent database and uploads if they exist in /data
+# But ONLY if we are not in a local dev environment with bind mounts
+if [ ! -L "web/app/uploads" ]; then
+    if [ -d "/data/uploads" ]; then
+        echo "Linking web/app/uploads to /data/uploads..."
+        # If there's a local uploads folder, move it to backup first
+        if [ -d "web/app/uploads" ] && [ ! -L "web/app/uploads" ]; then
+            echo "Moving existing local web/app/uploads to /data (backup)..."
+            mv web/app/uploads web/app/uploads.bak.$(date +%s) || true
         fi
-        echo "Creating symlink for $dir..."
-        ln -s "/data/$(basename $dir)" "$dir"
+        ln -snf /data/uploads web/app/uploads
     fi
-done
+fi
 
-# 5. Optimización: Habilitar WAL mode si la DB existe
-if [ -f "/data/database/.ht.sqlite" ]; then
-    echo "Enabling SQLite WAL mode for performance..."
-    # Usamos -n para no cargar archivos de config si causan warnings, 
-    # pero aquí necesitamos PDO. Los warnings de 'already loaded' deberían haber bajado.
+if [ ! -L "web/app/database" ]; then
+    if [ -d "/data/database" ]; then
+        echo "Linking web/app/database to /data/database..."
+        # If there's a local database folder, move it to backup first
+        if [ -d "web/app/database" ] && [ ! -L "web/app/database" ]; then
+            echo "Moving existing local web/app/database to /data (backup)..."
+            mv web/app/database web/app/database.bak.$(date +%s) || true
+        fi
+        ln -snf /data/database web/app/database
+    fi
+fi
+
+# Ensure SQLite WAL mode is enabled for performance if the DB exists
+if [ -f "web/app/database/.ht.sqlite" ]; then
+    echo "Enabling SQLite WAL mode and optimizations..."
     php -r "
         try {
-            \$db = new PDO('sqlite:/data/database/.ht.sqlite');
+            \$db = new PDO('sqlite:web/app/database/.ht.sqlite');
             \$db->exec('PRAGMA journal_mode=WAL;');
             \$db->exec('PRAGMA journal_size_limit = 67108864;');
             \$db->exec('PRAGMA synchronous=NORMAL;');
         } catch (Exception \$e) {
-            echo 'Warning: Could not enable WAL mode: ' . \$e->getMessage();
+            echo 'Warning: Could not enable optimizations: ' . \$e->getMessage();
         }
-    " || true
+    "
 fi
 
-# 6. Acorn Optimize (Solo si WP está configurado y en producción)
-if [ "$WP_ENV" = "production" ] && [ -f "web/wp-config.php" ]; then
+# Run optimizations if WordPress is ready
+if [ -f "web/wp-config.php" ] || [ -f "web/wp/wp-load.php" ]; then
     echo "Running Acorn optimization..."
-    # Intentamos optimizar, pero silenciamos el output de error si Acorn no está listo aún
-    wp acorn optimize --path=/app/web --allow-root >/dev/null 2>&1 || true
+    wp acorn optimize > /dev/null 2>&1 || true
+    
+    echo "Enabling Redis Object Cache..."
+    wp redis enable > /dev/null 2>&1 || true
 fi
 
 exec "$@"

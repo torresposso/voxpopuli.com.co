@@ -28,9 +28,9 @@
 		}
 
 		# Enable the FrankenPHP worker mode for the main index.php
-		# This keeps the app in memory and avoids re-parsing PHP on every request
+		# Using 2 workers to balance performance and RAM usage for low traffic
 		php_server {
-			worker index.php 4
+			worker index.php 2
 		}
 
 		# Ensure HTML and other dynamic content is not cached by the browser
