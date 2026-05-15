@@ -8,9 +8,8 @@ if ! mountpoint -q /data; then
 fi
 
 # 2. Asegurar directorios en el volumen
-mkdir -p /data/database
-mkdir -p /data/uploads
-chown -R 82:82 /data/database /data/uploads
+mkdir -p /data/database /data/uploads 2>/dev/null || echo "Warning: Could not create directories in /data, assuming they exist or are managed by Railway."
+
 
 # 3. Inicialización (Solo copiar si el volumen está vacío)
 if [ -z "$(ls -A /data/database)" ] && [ -d "web/app/database" ]; then
@@ -39,5 +38,12 @@ if [ -f "/data/database/.ht.sqlite" ]; then
         \$db->exec('PRAGMA synchronous=NORMAL;');
     " || true
 fi
+
+# 6. Acorn Optimize (Solo en producción)
+if [ "$WP_ENV" = "production" ]; then
+    echo "Running Acorn optimization..."
+    wp acorn optimize --allow-root || echo "Warning: Acorn optimize failed, continuing anyway..."
+fi
+
 
 exec "$@"

@@ -8,12 +8,21 @@ services:
       - WP_HOME=http://localhost:8080
       - WP_SITEURL=http://localhost:8080/wp
       - DB_ENGINE=sqlite
+      - PORT=80
     ports:
       - "8080:80"
       - "443:443"
       - "443:443/udp"
     volumes:
       - .:/app
+      - ./php.ini:/usr/local/etc/php/conf.d/app-optimized.ini
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   node:
     image: node:20-alpine

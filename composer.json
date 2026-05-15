@@ -28,6 +28,7 @@
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
+    "platform-check": false,
     "allow-plugins": {
       "composer/installers": true,
       "roots/wordpress-core-installer": true

@@ -5,7 +5,7 @@
     admin off
 }
 
-:{$PORT:80} {
+:{$PORT:8080} {
     root * /app/web
     encode zstd gzip
     
@@ -15,8 +15,23 @@
     # PHP Server
     php_server
 
+    # Security Headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    }
+
+    # Deny access to sensitive files
+    @forbidden {
+        path *.sqlite *.sqlite-journal *.sqlite-wal *.ht.sqlite .env* composer.*
+    }
+    error @forbidden 403
+
     log {
         output stdout
         format json
     }
+
 }

@@ -28,6 +28,10 @@ web/app/themes/*/public/hot
 # Docker
 .docker_data/
 db_data/
+data/
+web/app/database/
+web/app/uploads/
+
 
 # OS
 .DS_Store

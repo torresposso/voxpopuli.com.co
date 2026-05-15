@@ -17,3 +17,4 @@ web/app/themes/sage/public/build/
 # Ignore local databases and uploads (these live in the volume)
 web/app/database/
 web/app/uploads/
+data/
