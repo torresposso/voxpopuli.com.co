@@ -42,8 +42,9 @@ fi
 # 6. Acorn Optimize (Solo en producción)
 if [ "$WP_ENV" = "production" ]; then
     echo "Running Acorn optimization..."
-    wp acorn optimize --allow-root || echo "Warning: Acorn optimize failed, continuing anyway..."
+    wp acorn optimize --path=/app/web/wp || echo "Warning: Acorn optimize failed, continuing anyway..."
 fi
+
 
 
 exec "$@"

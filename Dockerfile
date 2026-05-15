@@ -48,7 +48,11 @@ ENV PORT=8080 \
     PHP_OPCACHE_INTERNED_STRINGS_BUFFER=16 \
     PHP_OPCACHE_MAX_ACCELERATED_FILES=10000 \
     PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
-    PHP_OPCACHE_ENABLE_CLI=1
+    PHP_OPCACHE_ENABLE_CLI=1 \
+    # Caddy Non-Root storage
+    XDG_DATA_HOME=/tmp/caddy_data \
+    XDG_CONFIG_HOME=/tmp/caddy_config
+
 
 # Copy infrastructure config
 COPY Caddyfile /etc/caddy/Caddyfile
