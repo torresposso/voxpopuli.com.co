@@ -4,13 +4,23 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --optimize-autoloader --ignore-platform-reqs
 
-# Stage 2: Theme assets
-FROM node:20-alpine AS node_builder
+# Stage 2: Theme dependencies (Composer & Node)
+FROM node:20-alpine AS theme_builder
+# Install Composer in the node image to handle theme PHP deps
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install PHP in the node image (alpine) for composer
+RUN apk add --no-cache php83 php83-openssl php83-phar php83-mbstring php83-zlib
+
 WORKDIR /app
 COPY web/app/themes/sage/package.json web/app/themes/sage/package-lock.json* ./web/app/themes/sage/
+COPY web/app/themes/sage/composer.json web/app/themes/sage/composer.lock* ./web/app/themes/sage/
 COPY web/app/themes/sage ./web/app/themes/sage
+
 WORKDIR /app/web/app/themes/sage
-RUN npm install && npm run build
+# Run both installs
+RUN composer install --no-dev --no-scripts --optimize-autoloader --ignore-platform-reqs && \
+    npm install && \
+    npm run build
 
 # Stage 3: Runtime
 FROM dunglas/frankenphp:latest-php8.3-alpine AS runtime
@@ -33,13 +43,14 @@ COPY Caddyfile /etc/caddy/Caddyfile
 # Copy application code
 COPY . /app
 
-# Copy EVERYTHING from php_builder to ensure WP core and plugins are there
+# Copy EVERYTHING from builders to ensure WP core, plugins, and THEME VENDOR are there
 COPY --from=php_builder /app/vendor /app/vendor
 COPY --from=php_builder /app/web/wp /app/web/wp
 COPY --from=php_builder /app/web/app/plugins /app/web/app/plugins
 
-# Copy built theme assets
-COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
+# Copy built theme assets AND theme vendor
+COPY --from=theme_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
+COPY --from=theme_builder /app/web/app/themes/sage/vendor /app/web/app/themes/sage/vendor
 
 # Final production settings
 RUN mkdir -p web/app/database web/app/uploads web/app/mu-plugins && \
