@@ -8,7 +8,7 @@ RUN if [ -d "web/app/themes/sage" ]; then \
     fi
 
 # Final image
-FROM dunglas/frankenphp:1-php8.3-alpine
+FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
 
 # Install necessary PHP extensions for WordPress and SQLite
 RUN apk add --no-cache \
