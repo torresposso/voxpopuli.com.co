@@ -55,6 +55,9 @@ COPY --from=php_builder /app/web/app/themes/sage/vendor /app/web/app/themes/sage
 # Copy built theme assets
 COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
 
+# Enable Redis Object Cache drop-in automatically for immutable filesystem
+RUN cp /app/web/app/plugins/redis-cache/includes/object-cache.php /app/web/app/object-cache.php
+
 # Final production settings
 RUN mkdir -p web/app/database web/app/uploads web/app/mu-plugins && \
     chown -R 82:82 web/app/database web/app/uploads web/app/mu-plugins && \
