@@ -31,7 +31,7 @@ RUN install-php-extensions \
 WORKDIR /app
 
 # Copy Caddyfile
-COPY Caddyfile /etc/frankenphp/Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
 
 # Copy application code
 COPY . /app
@@ -44,6 +44,3 @@ COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/them
 
 # Ensure SQLite directory exists and has permissions
 RUN mkdir -p web/app/database && chmod 777 web/app/database
-
-# FrankenPHP configuration
-ENV RAILPACK_PHP_ROOT_DIR=/app/web

@@ -1,9 +1,8 @@
 {
     frankenphp
-    order php_server before file_server
 }
 
-:{$PORT:80} {
+:{$PORT} {
     root * /app/web
     encode zstd gzip
 
