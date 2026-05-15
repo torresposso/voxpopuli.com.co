@@ -32,6 +32,10 @@
 		php_server {
 			worker index.php 4
 		}
+
+		# Ensure HTML and other dynamic content is not cached by the browser
+		# but is still generated fast by the worker mode.
+		header ?Cache-Control "no-cache, no-store, must-revalidate"
 	}
 
 	# Global compression
