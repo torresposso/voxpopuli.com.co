@@ -14,11 +14,22 @@ FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
 ENV XDG_CONFIG_HOME=/config \
     XDG_DATA_HOME=/data
 
-# Install su-exec for safe privilege dropping and other essentials
+# Install system dependencies and PHP extensions
 RUN apk add --no-cache \
     su-exec \
     bash \
     curl \
+    git \
+    unzip \
+    zip \
+    libcap \
+    && install-php-extensions \
+    pdo_sqlite \
+    zip \
+    gd \
+    intl \
+    opcache \
+    redis \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /app
