@@ -2,7 +2,6 @@
 FROM composer:2 AS php_builder
 WORKDIR /app
 COPY composer.json composer.lock ./
-# We need to allow plugins for wordpress-core-installer to work
 RUN composer install --no-dev --no-scripts --optimize-autoloader --ignore-platform-reqs
 
 # Stage 2: Theme assets
@@ -31,21 +30,20 @@ WORKDIR /app
 # Copy Caddyfile
 COPY Caddyfile /etc/caddy/Caddyfile
 
-# Copy application code (excluding things in builder)
+# Copy application code
 COPY . /app
 
 # Copy EVERYTHING from php_builder to ensure WP core and plugins are there
 COPY --from=php_builder /app/vendor /app/vendor
 COPY --from=php_builder /app/web/wp /app/web/wp
 COPY --from=php_builder /app/web/app/plugins /app/web/app/plugins
-COPY --from=php_builder /app/web/app/mu-plugins /app/web/app/mu-plugins
 
 # Copy built theme assets
 COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
 
 # Final production settings
-RUN mkdir -p web/app/database web/app/uploads && \
-    chmod 777 web/app/database web/app/uploads && \
+RUN mkdir -p web/app/database web/app/uploads web/app/mu-plugins && \
+    chmod 777 web/app/database web/app/uploads web/app/mu-plugins && \
     chmod +x docker-entrypoint.sh
 
 ENV PORT=80
