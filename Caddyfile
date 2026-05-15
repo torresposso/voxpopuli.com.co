@@ -3,6 +3,7 @@
     order php_server before file_server
     auto_https off
     admin off
+    storage file_system /tmp/caddy_storage
 }
 
 :{$PORT:8080} {

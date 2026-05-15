@@ -22,19 +22,8 @@ FROM dunglas/frankenphp:latest-alpine AS runtime
 LABEL maintainer="Vox Populi Digital <dev@voxpopuli.digital>" \
       description="Optimized Bedrock WordPress stack for Vox Populi"
 
-# Install PHP extensions in one layer and cleanup
-RUN install-php-extensions \
-    bcmath \
-    exif \
-    gd \
-    intl \
-    mysqli \
-    opcache \
-    pdo_mysql \
-    redis \
-    zip && \
-    # Install WP-CLI
-    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+# Install WP-CLI (Most extensions are already in FrankenPHP base)
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
