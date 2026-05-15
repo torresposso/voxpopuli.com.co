@@ -1,11 +1,19 @@
 #!/bin/bash
 set -e
 
-# Fix ownership of /data volume (only if running as root)
+# Fix ownership of critical volumes (only if running as root)
 if [ "$(id -u)" = '0' ]; then
-    echo "Fixing permissions for /data volume..."
-    mkdir -p /data/uploads /data/database /data/caddy
-    chown -R www-data:www-data /data
+    for dir in "/data" "/config" "/var/lib/caddy"; do
+        if [ -d "$dir" ]; then
+            echo "Fixing permissions for $dir volume..."
+            # Ensure directories exist
+            mkdir -p "$dir"
+            if [ "$dir" = "/data" ]; then
+                mkdir -p /data/uploads /data/database /data/caddy
+            fi
+            chown -R www-data:www-data "$dir"
+        fi
+    done
 fi
 
 # Link the persistent database and uploads if they exist in /data

@@ -10,8 +10,11 @@ RUN if [ -d "web/app/themes/sage" ]; then \
 # Final image
 FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
 
+# Set Caddy storage paths explicitly
+ENV XDG_CONFIG_HOME=/config \
+    XDG_DATA_HOME=/data
+
 # Install su-exec for safe privilege dropping and other essentials
-# Most PHP extensions (GD, Zip, Intl, etc.) are already built-in to FrankenPHP
 RUN apk add --no-cache \
     su-exec \
     bash \
@@ -22,7 +25,7 @@ WORKDIR /app
 
 # Use production PHP configuration and tune it for performance (low-memory profile)
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
-    sed -i 's/memory_limit = 128M/memory_limit = 256M/' "$PHP_INI_DIR/php.ini" && \
+    sed -i 's/memory_limit = 128M/memory_limit = 128M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 100M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/post_max_size = 8M/post_max_size = 100M/' "$PHP_INI_DIR/php.ini" && \
     sed -i 's/;opcache.enable=1/opcache.enable=1/' "$PHP_INI_DIR/php.ini" && \
@@ -57,4 +60,4 @@ EXPOSE 8080
 USER root
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

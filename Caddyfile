@@ -1,14 +1,13 @@
 {
-	# Global options
 	frankenphp {
-		# Low-memory thread profile
 		num_threads 2
+		max_threads 2
+		max_requests 500
+		php_ini memory_limit 128M
+		php_ini opcache.memory_consumption 64
 	}
-	# Disable admin API for security and cleaner logs
 	admin off
-	# Disable HTTPS auto redirection since Railway handles SSL
 	auto_https off
-	# Storage configuration to avoid non-root permission issues
 	storage file_system {
 		root /tmp/caddy_storage
 	}
