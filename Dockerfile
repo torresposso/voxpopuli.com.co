@@ -60,4 +60,4 @@ EXPOSE 8080
 USER root
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+CMD ["frankenphp", "run", "--config", "/app/Caddyfile", "--adapter", "caddyfile"]
