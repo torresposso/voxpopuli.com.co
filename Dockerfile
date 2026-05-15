@@ -43,10 +43,13 @@ COPY --from=php_builder /app/web/app/mu-plugins /app/web/app/mu-plugins
 # Copy built theme assets
 COPY --from=node_builder /app/web/app/themes/sage/public/build /app/web/app/themes/sage/public/build
 
-# Permissions for SQLite
-RUN mkdir -p web/app/database && chmod 777 web/app/database
-# Ensure uploads folder exists
-RUN mkdir -p web/app/uploads && chmod 777 web/app/uploads
+# Final production settings
+RUN mkdir -p web/app/database web/app/uploads && \
+    chmod 777 web/app/database web/app/uploads && \
+    chmod +x docker-entrypoint.sh
 
 ENV PORT=80
 EXPOSE 80
+
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
