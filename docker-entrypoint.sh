@@ -44,8 +44,8 @@ if [ -f "/data/database/.ht.sqlite" ]; then
     " || true
 fi
 
-# 6. Acorn Optimize (Solo en producción)
-if [ "$WP_ENV" = "production" ]; then
+# 6. Acorn Optimize (Solo si WP está configurado y en producción)
+if [ "$WP_ENV" = "production" ] && [ -f "web/wp-config.php" ]; then
     echo "Running Acorn optimization..."
     # Ejecutamos desde el root de la app para que WP-CLI encuentre el bootstrap
     wp acorn optimize --path=/app/web --allow-root || echo "Warning: Acorn optimize failed, continuing anyway..."

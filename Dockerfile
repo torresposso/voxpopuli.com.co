@@ -29,6 +29,10 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 WORKDIR /app
 
+# Clean up redundant PHP extension configs that cause "already loaded" warnings
+# (FrankenPHP base image has these built-in but sometimes leaves .ini files)
+RUN rm -f /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini 2>/dev/null || true
+
 # Global PHP/FrankenPHP settings
 ENV PORT=8080 \
     PHP_INI_SCAN_DIR=:/usr/local/etc/php/conf.d \
