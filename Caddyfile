@@ -26,11 +26,12 @@
 			file_server
 		}
 
-		# Enable the FrankenPHP handler
-		php_server
+		# Enable the FrankenPHP handler with Bedrock optimizations
+		php_server {
+			resolve_root_symlink false
+		}
 
-		# Ensure HTML and other dynamic content is not cached by the browser
-		# but is still generated fast by the worker mode.
+		# Browser cache headers for non-static content
 		header ?Cache-Control "no-cache, no-store, must-revalidate"
 	}
 
