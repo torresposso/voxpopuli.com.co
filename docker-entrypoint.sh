@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e
 
+# Fix ownership of /data volume (only if running as root)
+if [ "$(id -u)" = '0' ]; then
+    echo "Fixing permissions for /data volume..."
+    mkdir -p /data/uploads /data/database /data/caddy
+    chown -R www-data:www-data /data
+fi
+
 # Link the persistent database and uploads if they exist in /data
-# But ONLY if we are not in a local dev environment with bind mounts
 if [ ! -L "web/app/uploads" ]; then
     if [ -d "/data/uploads" ]; then
         echo "Linking web/app/uploads to /data/uploads..."
-        # If there's a local uploads folder, move it to backup first
         if [ -d "web/app/uploads" ] && [ ! -L "web/app/uploads" ]; then
-            echo "Moving existing local web/app/uploads to /data (backup)..."
             mv web/app/uploads web/app/uploads.bak.$(date +%s) || true
         fi
         ln -snf /data/uploads web/app/uploads
@@ -18,9 +22,7 @@ fi
 if [ ! -L "web/app/database" ]; then
     if [ -d "/data/database" ]; then
         echo "Linking web/app/database to /data/database..."
-        # If there's a local database folder, move it to backup first
         if [ -d "web/app/database" ] && [ ! -L "web/app/database" ]; then
-            echo "Moving existing local web/app/database to /data (backup)..."
             mv web/app/database web/app/database.bak.$(date +%s) || true
         fi
         ln -snf /data/database web/app/database
@@ -51,4 +53,9 @@ if [ -f "web/wp-config.php" ] || [ -f "web/wp/wp-load.php" ]; then
     wp redis enable > /dev/null 2>&1 || true
 fi
 
-exec "$@"
+# Finally, execute as www-data if we are root, otherwise execute normally
+if [ "$(id -u)" = '0' ]; then
+    exec su-exec www-data "$@"
+else
+    exec "$@"
+fi

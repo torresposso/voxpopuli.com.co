@@ -10,24 +10,15 @@ RUN if [ -d "web/app/themes/sage" ]; then \
 # Final image
 FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
 
-# Install necessary PHP extensions for WordPress and SQLite
+# Install su-exec for safe privilege dropping and other essentials
+# Most PHP extensions (GD, Zip, Intl, etc.) are already built-in to FrankenPHP
 RUN apk add --no-cache \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    libzip-dev \
-    icu-dev \
-    oniguruma-dev \
+    su-exec \
     bash \
     curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd zip intl mbstring mysqli pdo_mysql bcmath \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /app
-
-# Clean up redundant PHP extension configs that cause "already loaded" warnings
-RUN rm -f /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini 2>/dev/null || true
 
 # Use production PHP configuration and tune it for performance (low-memory profile)
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
@@ -42,7 +33,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 
 # Global PHP/FrankenPHP settings
 ENV PORT=8080 \
-    PHP_INI_SCAN_DIR=:/usr/local/etc/php/conf.d \
     COMPOSER_ALLOW_SUPERUSER=1
 
 # Install Composer
@@ -52,11 +42,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . .
 
 # Copy build assets from the assets stage
-COPY --from=assets /app/web/app/themes/sage/public/build ./web/app/themes/sage/public/build
+RUN if [ -d "web/app/themes/sage/public/build" ]; then \
+        rm -rf web/app/themes/sage/public/build; \
+    fi
+COPY --from=assets /app/web/app/themes/sage/public/build ./web/app/themes/sage/public/build 2>/dev/null || true
 
-# Setup permissions and entrypoint for non-root (UID 82 = www-data)
-RUN chown -R 82:82 /app && \
-    chmod +x /app/docker-entrypoint.sh
+# Setup permissions
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Healthcheck for reliability
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
@@ -64,7 +56,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 
 EXPOSE 8080
 
-USER 82
+# Run as root to allow entrypoint to fix volume permissions
+USER root
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
