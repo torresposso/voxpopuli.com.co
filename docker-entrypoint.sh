@@ -1,55 +1,43 @@
 #!/bin/sh
 set -e
 
-# Ensure persistent directories exist in the Railway volume
+# 1. Seguridad: Verificar que el volumen esté montado
+if ! mountpoint -q /data; then
+    echo "CRITICAL: /data is not a mountpoint. Aborting to prevent data inconsistency."
+    exit 1
+fi
+
+# 2. Asegurar directorios en el volumen
 mkdir -p /data/database
 mkdir -p /data/uploads
+chown -R 82:82 /data/database /data/uploads
 
-# Set permissions for the volume directories
-# (777 is a bit loose but ensures FrankenPHP can write regardless of UID)
-chmod 777 /data/database
-chmod 777 /data/uploads
-
-# Handle the database directory
-if [ -d "web/app/database" ] && [ ! -L "web/app/database" ]; then
-    # If it's a real directory, move existing contents to /data if /data is empty
-    if [ "$(ls -A /data/database)" ]; then
-        echo "Railway volume /data/database is not empty, skipping initial copy."
-    else
-        echo "Copying initial database files to /data/database..."
-        cp -a web/app/database/. /data/database/ || true
-    fi
-    rm -rf web/app/database
+# 3. Inicialización (Solo copiar si el volumen está vacío)
+if [ -z "$(ls -A /data/database)" ] && [ -d "web/app/database" ]; then
+    echo "Initializing database in /data/database..."
+    cp -a web/app/database/. /data/database/
 fi
 
-# Symlink persistent folders to the app structure
-if [ ! -L "web/app/database" ]; then
-    ln -s /data/database web/app/database
+if [ -z "$(ls -A /data/uploads)" ] && [ -d "web/app/uploads" ]; then
+    echo "Initializing uploads in /data/uploads..."
+    cp -a web/app/uploads/. /data/uploads/
 fi
 
-if [ -d "web/app/uploads" ] && [ ! -L "web/app/uploads" ]; then
-    if [ "$(ls -A /data/uploads)" ]; then
-         echo "Railway volume /data/uploads is not empty, skipping initial copy."
-    else
-        echo "Copying initial uploads to /data/uploads..."
-        cp -a web/app/uploads/. /data/uploads/ || true
-    fi
-    rm -rf web/app/uploads
-fi
+# 4. Enlazar (Si no son symlinks, los removemos solo si están vacíos o si estamos seguros del montaje)
+# Removemos los locales para montar los symlinks del volumen persistente
+# (Asegurado por el chequeo de mountpoint al inicio)
+rm -rf web/app/database web/app/uploads
+ln -s /data/database web/app/database
+ln -s /data/uploads web/app/uploads
 
-if [ ! -L "web/app/uploads" ]; then
-    ln -s /data/uploads web/app/uploads
-fi
-
-# Optimization: Attempt to enable WAL mode on the SQLite DB if it exists
+# 5. Optimización: Habilitar WAL mode si la DB existe
 if [ -f "/data/database/.ht.sqlite" ]; then
     echo "Enabling SQLite WAL mode for performance..."
     php -r "
         \$db = new PDO('sqlite:/data/database/.ht.sqlite');
         \$db->exec('PRAGMA journal_mode=WAL;');
         \$db->exec('PRAGMA synchronous=NORMAL;');
-    " || echo "Could not enable WAL mode (might be initial install)."
+    " || true
 fi
 
-# Execute the main command
 exec "$@"

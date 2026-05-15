@@ -105,6 +105,16 @@ Config::define('DISALLOW_FILE_MODS', true);
 Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?: true);
 
 /**
+ * Redis Object Cache
+ */
+if (env('WP_REDIS_HOST')) {
+    Config::define('WP_REDIS_HOST', env('WP_REDIS_HOST'));
+    Config::define('WP_REDIS_PORT', env('WP_REDIS_PORT'));
+    Config::define('WP_REDIS_PASSWORD', env('WP_REDIS_PASSWORD'));
+    Config::define('WP_REDIS_DATABASE', env('WP_REDIS_DATABASE') ?: 0);
+}
+
+/**
  * Debugging Settings
  */
 Config::define('WP_DEBUG_DISPLAY', false);

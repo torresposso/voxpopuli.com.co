@@ -22,7 +22,8 @@
     "roots/wp-password-bcrypt": "^1.1.0",
     "roots/acorn": "^6.0",
     "wp-cli/wp-cli-bundle": "^2.10",
-    "wp-plugin/sqlite-database-integration": "^2.2"
+    "wp-plugin/sqlite-database-integration": "^2.2",
+    "wp-plugin/redis-cache": "^2.8"
   },
   "config": {
     "optimize-autoloader": true,
