@@ -35,14 +35,21 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=8/' "$PHP_INI_DIR/php.ini"
 
 # Global PHP/FrankenPHP settings
-ENV PORT=8080 \
+ENV PORT=80 \
     COMPOSER_ALLOW_SUPERUSER=1
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install dependencies separately for better caching
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-interaction --optimize-autoloader
+
 # Copy application files
 COPY . .
+
+# Run composer again to trigger scripts (moving WordPress to web/wp, etc.)
+RUN composer install --no-dev --no-interaction --optimize-autoloader
 
 # Copy build assets from the assets stage
 COPY --from=assets /app/web/app/themes/sage/public/build ./web/app/themes/sage/public/build/
@@ -52,9 +59,9 @@ RUN chmod +x /app/docker-entrypoint.sh
 
 # Healthcheck for reliability
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:8080/wp/wp-login.php || exit 1
+    CMD curl -f http://localhost:80/wp/wp-login.php || exit 1
 
-EXPOSE 8080
+EXPOSE 80
 
 # Run as root to allow entrypoint to fix volume permissions
 USER root
