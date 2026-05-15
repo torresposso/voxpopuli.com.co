@@ -46,6 +46,7 @@ if [ -f "/data/database/.ht.sqlite" ]; then
         try {
             \$db = new PDO('sqlite:/data/database/.ht.sqlite');
             \$db->exec('PRAGMA journal_mode=WAL;');
+            \$db->exec('PRAGMA journal_size_limit = 67108864;');
             \$db->exec('PRAGMA synchronous=NORMAL;');
         } catch (Exception \$e) {
             echo 'Warning: Could not enable WAL mode: ' . \$e->getMessage();
