@@ -27,11 +27,8 @@
 			file_server
 		}
 
-		# Enable the FrankenPHP worker mode for the main index.php
-		# Using 2 workers to balance performance and RAM usage for low traffic
-		php_server {
-			worker index.php 2
-		}
+		# Enable the FrankenPHP handler
+		php_server
 
 		# Ensure HTML and other dynamic content is not cached by the browser
 		# but is still generated fast by the worker mode.
