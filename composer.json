@@ -52,5 +52,8 @@
     "post-autoload-dump": [
       "Roots\\Acorn\\ComposerScripts::postAutoloadDump"
     ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5"
   }
 }
