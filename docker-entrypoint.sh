@@ -21,7 +21,7 @@ if [ ! -L "web/app/uploads" ]; then
     if [ -d "/data/uploads" ]; then
         echo "Linking web/app/uploads to /data/uploads..."
         if [ -d "web/app/uploads" ] && [ ! -L "web/app/uploads" ]; then
-            mv web/app/uploads web/app/uploads.bak.$(date +%s) || true
+            mv web/app/uploads /tmp/uploads.bak.$(date +%s) || true
         fi
         ln -snf /data/uploads web/app/uploads
     fi
@@ -31,7 +31,7 @@ if [ ! -L "web/app/database" ]; then
     if [ -d "/data/database" ]; then
         echo "Linking web/app/database to /data/database..."
         if [ -d "web/app/database" ] && [ ! -L "web/app/database" ]; then
-            mv web/app/database web/app/database.bak.$(date +%s) || true
+            mv web/app/database /tmp/database.bak.$(date +%s) || true
         fi
         ln -snf /data/database web/app/database
     fi
