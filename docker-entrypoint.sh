@@ -54,11 +54,18 @@ fi
 
 # Run optimizations if WordPress is ready
 if [ -f "web/wp-config.php" ] || [ -f "web/wp/wp-load.php" ]; then
+    # Execute wp commands securely
+    if [ "$(id -u)" = '0' ]; then
+        WP_CMD="su-exec www-data wp"
+    else
+        WP_CMD="wp"
+    fi
+
     echo "Running Acorn optimization..."
-    wp acorn optimize > /dev/null 2>&1 || true
+    $WP_CMD acorn optimize > /dev/null 2>&1 || true
     
     echo "Enabling Redis Object Cache..."
-    wp redis enable > /dev/null 2>&1 || true
+    $WP_CMD redis enable > /dev/null 2>&1 || true
 fi
 
 # Finally, execute as www-data if we are root, otherwise execute normally
