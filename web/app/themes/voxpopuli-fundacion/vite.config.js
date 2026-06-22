@@ -9,7 +9,14 @@ if (! process.env.APP_URL) {
 }
 
 export default defineConfig({
-  base: '/app/themes/sage/public/build/',
+  base: '/app/themes/voxpopuli-fundacion/public/build/',
+  server: {
+    host: '0.0.0.0',
+    port: 5174,
+    hmr: {
+      host: 'localhost',
+    },
+  },
   plugins: [
     tailwindcss(),
     laravel({
