@@ -1,0 +1,80 @@
+{
+	skip_install_trust
+	auto_https off
+
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		num_threads 1
+		max_threads 4
+		max_requests 1000
+
+		php_ini memory_limit 128M
+		php_ini max_execution_time 30
+		php_ini max_input_vars 5000
+
+		php_ini opcache.enable 1
+		php_ini opcache.enable_cli 1
+		php_ini opcache.memory_consumption 64
+		php_ini opcache.interned_strings_buffer 8
+		php_ini opcache.max_accelerated_files 30000
+		php_ini opcache.revalidate_freq 0
+
+		php_ini realpath_cache_size 4096K
+		php_ini realpath_cache_ttl 600
+	}
+}
+
+{$CADDY_EXTRA_CONFIG}
+:{$PORT} {
+	root {$SERVER_ROOT:public/}
+	encode zstd br gzip
+
+	@hashed_assets {
+		path */build/assets/*
+	}
+	header @hashed_assets Cache-Control "public, max-age=31536000, immutable"
+
+	@uploads {
+		path */uploads/*
+	}
+	header @uploads Cache-Control "public, max-age=86400"
+
+	header ?Cache-Control "no-cache, must-revalidate"
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Strict-Transport-Security "max-age=86400; includeSubDomains"
+		Cross-Origin-Opener-Policy "same-origin-allow-popups"
+		Permissions-Policy "camera=(), geolocation=(), microphone=()"
+	}
+
+	@db_blocked {
+		path */uploads/database/*
+		path */storage/database/*
+		path *.sqlite
+		path *.db
+	}
+	respond @db_blocked "Access Denied" 403
+
+	@blocked_paths {
+		path *.log
+		path /app/cache/*
+		path /app/debug.log
+	}
+	respond @blocked_paths "Access Denied" 403
+
+	@php_in_uploads {
+		path */uploads/*.php
+		path */uploads/*/*.php
+	}
+	respond @php_in_uploads "Access Denied" 403
+
+	{$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+	php_server
+}
+
+import Caddyfile.d/*.caddyfile

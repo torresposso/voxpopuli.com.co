@@ -1,0 +1,31 @@
+name: voxpopuli
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+    volumes:
+      - .:/app
+      - ./Caddyfile:/etc/frankenphp/Caddyfile
+    restart: unless-stopped
+
+  node:
+    image: node:20-alpine
+    working_dir: /app/web/app/themes/voxpopuli-fundacion
+    volumes:
+      - .:/app
+      - /app/web/app/themes/voxpopuli-fundacion/node_modules
+    ports:
+      - "5174:5174"
+    command: sh -c "npm install && npm run dev"
+    environment:
+      APP_URL: http://localhost:8080

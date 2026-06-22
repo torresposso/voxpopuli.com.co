@@ -32,3 +32,20 @@ phpunit.xml
 
 # WP-CLI
 wp-cli.local.yml
+
+# Storage (database outside web root)
+/storage/
+
+# Development artifacts
+composer-setup.php
+vendor/bin/
+phpunit.xml
+pint.json
+
+# IDE / Agent
+.vscode/
+.agents/
+.atl/
+
+# Exports / dumps
+/exports/*
