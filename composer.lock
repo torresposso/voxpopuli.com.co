@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "624f074107f03ac20d1392dabbe57f80",
+    "content-hash": "b22ac24b8fc4106d90398aed2efd4b19",
     "packages": [
         {
             "name": "brick/math",
@@ -6979,6 +6979,36 @@
                 }
             ],
             "time": "2026-04-26T05:33:54+00:00"
+        },
+        {
+            "name": "wp-plugin/sqlite-database-integration",
+            "version": "2.2.23",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/sqlite-database-integration/",
+                "reference": "tags/2.2.23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/sqlite-database-integration.2.2.23.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0|~2.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://wp-packages.org/downloads",
+            "authors": [
+                {
+                    "name": "WordPress.org"
+                }
+            ],
+            "description": "SQLite integration plugin by the WordPress Team.",
+            "support": {
+                "changelog": "https://wordpress.org/plugins/sqlite-database-integration/#developers",
+                "issues": "https://wordpress.org/support/plugin/sqlite-database-integration",
+                "source": "https://plugins.svn.wordpress.org/sqlite-database-integration"
+            },
+            "time": "2026-04-10T15:10:54+00:00"
         },
         {
             "name": "wp-theme/twentytwentyfive",

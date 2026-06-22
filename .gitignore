@@ -34,7 +34,8 @@ phpunit.xml
 wp-cli.local.yml
 
 # Storage (database outside web root)
-/storage/
+/storage/*
+!/storage/database/.gitkeep
 
 # Development artifacts
 composer-setup.php
