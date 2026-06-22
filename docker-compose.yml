@@ -10,7 +10,7 @@ services:
         USER_ID: ${USER_ID:-1000}
         GROUP_ID: ${GROUP_ID:-1000}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       PORT: "8080"
     volumes:
@@ -28,4 +28,4 @@ services:
       - "5174:5174"
     command: sh -c "npm install && npm run dev"
     environment:
-      APP_URL: http://localhost:8080
+      APP_URL: http://localhost:8081
