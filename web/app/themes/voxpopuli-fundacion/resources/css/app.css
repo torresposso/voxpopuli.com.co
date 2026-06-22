@@ -1,4 +1,5 @@
 @import "tailwindcss" theme(static);
+@plugin "daisyui";
 @source "../../app/**/*.php";
 @source "../**/*.blade.php";
 @source "../**/*.js";
